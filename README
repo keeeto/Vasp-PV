@@ -1,0 +1,27 @@
+This script and its contents are not associated with the VASP code in any way. Use them at your own risk and reward.
+
+The basic flow of the script is this:
+
+  1) Geometry optimisation
+    1a) Optimise coordinates
+    1b) Optimise the cell 
+    1c) Optimise everything together
+    
+  2) Calculate the polarisation of the cell - if non-centrosymmetric, uisng a Barry phase approach
+  
+  3) Calculate the band structure
+    3a) Get the self-consistent charge distribution uisng the standard k-points
+    3b) Set up the special k-point mesh and calculate the band-structure non-self-consistently
+    
+  4) Calculate the optical properties and high-frequency dielectric constant
+  
+----------------------------------------
+
+What you need to set:
+  All INCARs : set NPAR/KPAR to best work with your system, Peter Larsen has an excellent blog on this (https://www.nsc.liu.se/~pla/)
+  KPOINTS for optimisations/charge calculation should be specicied in the usual way
+  KPOINTS for band structure - these must be set up in an individual file called KPOINTS.band. This file contains only the special points with their weighting
+  eg.   0.0000  0.50000  0.00000   0.00    
+  if you use ASE I have written a script to generate these 'automatically' (https://github.com/keeeto/kpoints-brillouin/blob/master/kpoints-bz-vasp.py)
+  KPOINTS for the optics, this should be denser than the regular KPOINTS, if possible
+  POTCAR containing the pseudopotentials
