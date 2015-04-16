@@ -1,0 +1,104 @@
+#!/bin/bash 
+
+for dir in *
+      do
+    	cd $dir
+	cp *POSCAR* POSCAR
+	finished_ions=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`
+	finished_latt=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`
+	finished_totl=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`       # reached if done
+	finished_pol=`grep 'Ionic dipole' OUTCAR.Polarisation | awk '{print $1}'`  # Ionic if done
+	finished_hse_chg=`grep 'free  energy' OUTCAR.Charge | awk '{print $2}'` # energy if done
+	finished_hse_bands=`grep 'free  energy' OUTCAR.Bands | awk '{print $2}'` # energy if done
+	finished_hse_optics=`grep 'outermost' OUTCAR.Optics | awk '{print $2}'` # energy if done
+
+	if [ "$finished_ions" == 'reached' ]
+    	then
+    	echo "Ions optimisation already done, skipping to lattice"
+	else
+    	cp INCAR.Ions INCAR
+    	cp KPOINTS.Orig KPOINTS
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Ions
+    	cp CONTCAR CONTCAR.Ions
+	fi
+
+	if [ "$finished_latt" == 'reached' ]
+    	then
+    	echo "Lattice optimisation already done, skipping to lattice"
+	else
+    	cp INCAR.Lattice INCAR
+    	cp KPOINTS.Orig KPOINTS
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Lattice
+    	cp CONTCAR CONTCAR.Lattice
+	fi
+	
+	if [ "$finished_totl" == 'reached' ]
+    	then
+    	echo "All optimisation done already!"
+	else
+    	cp INCAR.Ions.Tight INCAR
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Ions.Tight
+    	cp CONTCAR CONTCAR.Ions.Tight
+	fi
+	
+	if [ "$finished_pol" == 'Ionic' ]
+    	then
+    	echo "Polarisation done already!"
+	else
+    	cp INCAR.Polarisation INCAR
+    	cp KPOINTS.Orig KPOINTS
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Polarisation
+	fi
+	
+	if [ "$finished_hse_chg" == 'energy' ]
+    	then
+    	echo "HSE-CHARGE done already!"
+	else
+    	cp INCAR.HSE0.Chg INCAR
+    	cp KPOINTS.Orig KPOINTS
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Charge
+    	mv CHGCAR CHGCAR.HSE
+    	mv WAVECAR WAVECAR.HSE
+	fi
+	if [ "$finished_hse_bands" == 'energy' ]
+    	then
+    	echo "HSE-bands done already!"
+	else
+    	mv CHGCAR.HSE CHGCAR
+    	mv WAVECAR.HSE WAVECAR
+    	cp INCAR.HSE0.Bands INCAR
+    	awk '{if(NF ==4){print $0}}' IBZKPT > tmp
+    	awk '{if(NF ==4){print $0}}' KPOINTS.band >> tmp
+    	echo 'Script generated mesh' > KPOINTS
+    	echo `wc -l tmp | awk '{print $1}'` >> KPOINTS
+    	echo 'Reciprocal lattice' >> KPOINTS
+    	cat tmp >> KPOINTS 
+    	$ExecuteVasp
+    	cp OUTCAR OUTCAR.Bands
+    	cp KPOINTS KPOINTS.Bands
+    	mv PROCAR PROCAR.HSE
+    	mv EIGENVAL EIGENVAL.HSE
+    	mv DOSCAR DOS.HSE
+    	mv LOCPOT LOCPOT.HSE
+	fi
+	
+	if [ "$finished_hse_optics" == 'outermost' ]
+    	then
+    	echo "HSE-optics done already!"
+	else
+	# Set a higher number of bands for the Optics calc (double the standard)
+	Bands=`grep NBANDS OUTCAR.Ions.Tight | head -1 | awk '{print $15}'`
+	NewBands=`echo "$Bands * 2" | bc`
+ 	sed "s/NewBands/$NewBands/" INCAR.Optics > INCAR	
+	# If possible it is good to have a denser k-point grid for Optics
+	cp KPOINTS.Optics KPOINTS
+    	$ExecuteVasp
+	cp OUTCAR OUTCAR.Optics
+        fi	
+cd ../
+done
