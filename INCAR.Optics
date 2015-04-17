@@ -28,7 +28,7 @@ KPAR = 4
  NELM   = 100         (Max number of SCF steps)
  NELMAX = 5           (Min number of SCF steps)
  EDIFF  = 1E-06       (SCF convergence criteria)
- GGA    =  PS         (PBEsol exchange-correlation)
+ GGA    =  PE         (PBE exchange-correlation)
 
 !Ionic Relaxation
  EDIFFG =      -0.005 (Ionic convergence criteria, eV/AA)
