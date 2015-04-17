@@ -28,7 +28,7 @@ SYSTEM = Name
  !!NELM   = 6         (Max number of SCF steps)
  NELMAX = 100           (Min number of SCF steps)
  EDIFF  = 1E-06       (SCF convergence criteria)
- GGA    =  PS         (PBEsol exchange-correlation)
+ GGA    =  PE         (PBEsol exchange-correlation)
 
 !Ionic Relaxation
  EDIFFG =      -0.005 (Ionic convergence criteria, eV/AA)
