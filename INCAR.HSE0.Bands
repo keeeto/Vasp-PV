@@ -3,7 +3,7 @@ SYSTEM = Name
  ISTART     = 1     (Read existing wavefunction, if present)
  INIWAV     = 1     (Random initial wavefunction)
  ICORELEVEL = 1     (Print core levels in OUTCAR)
- ICHARG   =  11   (Non-selfconsistent: band structures)
+ !!ICHARG   =  11   (Non-selfconsistent: band structures)
  !!NELECT   = 352   (Number of electrons: charged cells)
  !!NBANDS   = 468   (Increase number of bands)
 
@@ -28,7 +28,7 @@ KPAR = 4
  NELM   = 3         (Max number of SCF steps)
  NELMAX = 3           (Min number of SCF steps)
  EDIFF  = 1E-06       (SCF convergence criteria)
- GGA    =  PS         (PBEsol exchange-correlation)
+ GGA    =  PE         (PBEsol exchange-correlation)
 
 !Ionic Relaxation
  EDIFFG =      -0.005 (Ionic convergence criteria, eV/AA)
