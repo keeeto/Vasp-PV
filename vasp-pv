@@ -21,6 +21,7 @@ for dir in *
     	$ExecuteVasp
     	cp OUTCAR OUTCAR.Ions
     	cp CONTCAR CONTCAR.Ions
+    	cp CONTCAR POSCAR
 	fi
 
 	if [ "$finished_latt" == 'reached' ]
@@ -32,6 +33,7 @@ for dir in *
     	$ExecuteVasp
     	cp OUTCAR OUTCAR.Lattice
     	cp CONTCAR CONTCAR.Lattice
+    	cp CONTCAR POSCAR
 	fi
 	
 	if [ "$finished_totl" == 'reached' ]
@@ -42,6 +44,7 @@ for dir in *
     	$ExecuteVasp
     	cp OUTCAR OUTCAR.Ions.Tight
     	cp CONTCAR CONTCAR.Ions.Tight
+    	cp CONTCAR POSCAR
 	fi
 	
 	if [ "$finished_pol" == 'Ionic' ]
