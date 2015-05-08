@@ -7,7 +7,7 @@ The basic flow of the script is this:
     1b) Optimise the cell 
     1c) Optimise everything together
     
-  2) Calculate the polarisation of the cell - if non-centrosymmetric, uisng a Barry phase approach
+  2) Calculate the polarisation of the cell - if non-centrosymmetric, uisng a Berry phase approach
   
   3) Calculate the band structure
     3a) Get the self-consistent charge distribution uisng the standard k-points
