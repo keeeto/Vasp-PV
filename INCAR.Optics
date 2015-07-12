@@ -7,19 +7,6 @@ SYSTEM = Name
  !!NELECT   = 352   (Number of electrons: charged cells)
  NBANDS   = NewBands   (Increase number of bands)
 
-!Parallel Options
- !!LPLANE = .TRUE.   (Real space distribution)
-!! NPAR   = 8        (Max is no. nodes)
-KPAR = 4
-
-!Decomposed Charge Density:}
- !!LPARD = .TRUE. (Generate PARCHG)
- !!LSEPB = .TRUE. (Separate Bands into PARCHG.band)
- !!EINT  = -10 0  (Energy range)
- !!NBMOD =  -3    (With reference to E_F)
- !!KPUSE =  1     (Average over k-points)
- !!IBAND =  469    (Average over bands)
-
 !Electronic Relaxation
  PREC   = Accurate    (Precision level for FFT grid)
  !!LREAL  = Auto        (Projection operators: automatic)
@@ -57,24 +44,4 @@ KPAR = 4
  NEDOS    =  1000    (Increase DOSCAR points)
  !!LVTOT   = .TRUE.   (Output electrostatic potential)
  !!LELF    = .TRUE.   (Output electron localization function)
-
-!Magnetic Calculations
- ISPIN     =  1      (Closed shell: 1, Spin Polarised: 2)
- !!MAGMOM  = 5 0     (Initial magnetic mom each ion)
- !!NUPDOWN = -1      (Enforce spin multiplet)
- !!LSORBIT = .TRUE.  (Spin-orbit coupling)
-
-!DFT+U Calculations
- !!LDAU     = .TRUE.   (Activate DFT+U)
- !!LDATYPE  = 2        (Dudarev, only U-J matters)
- !!LDAUL    = 2 -1     (Orbital for each species)
- !!LDAUU    = 2  0     (U for each species)
- !!LDAUJ    = 0  0     (J for each species)
- LMAXMIX    =  4       (Mixing cutoff: 4-d,6-f)
-
-!Molecular Dynamics
- !!POTIM   =      10    (Timestep fs)
- !!TEBEG   =    100     (Start temperature K)
- !!TEEND   =  100       (End temperature K)
- !!SMASS   =  0         (Canonical ensemble)
 

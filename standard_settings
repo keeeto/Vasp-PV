@@ -1,0 +1,19 @@
+SYSTEM = Name
+!! NBNB THESE PARAMETERS MUST BE SET BY THE USER, THEY WILL BE USED FOR EVERY CALCULATION
+ NPAR   = 8        (Max is no. nodes)
+ KPAR   = 8
+ LREAL  = Auto        (Projection operators: automatic)
+ ENMAX  = 500.00 eV   (Plane-wave cutoff)
+ ISPIN     =  1      (Closed shell: 1, Spin Polarised: 2)
+ !!MAGMOM  = 5 0     (Initial magnetic mom each ion)
+ !!NUPDOWN = -1      (Enforce spin multiplet)
+ !!LSORBIT = .TRUE.  (Spin-orbit coupling)
+
+!DFT+U Calculations
+ !!LDAU     = .TRUE.   (Activate DFT+U)
+ !!LDATYPE  = 2        (Dudarev, only U-J matters)
+ !!LDAUL    = 2 -1     (Orbital for each species)
+ !!LDAUU    = 2  0     (U for each species)
+ !!LDAUJ    = 0  0     (J for each species)
+ !!LMAXMIX    =  4       (Mixing cutoff: 4-d,6-f)
+
