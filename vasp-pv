@@ -16,7 +16,7 @@ for dir in *
     	then
     	echo "Ions optimisation already done, skipping to lattice"
 	else
-	cat standard_states > INCAR
+	cat standard_settings > INCAR
     	cat INCAR.Ions >> INCAR
     	cp KPOINTS.Orig KPOINTS
     	$ExecuteVasp
@@ -29,7 +29,7 @@ for dir in *
     	then
     	echo "Lattice optimisation already done, skipping to lattice"
 	else
-	cat standard_states > INCAR
+	cat standard_settings > INCAR
     	cat INCAR.Lattice >> INCAR
     	cp KPOINTS.Orig KPOINTS
     	$ExecuteVasp
@@ -42,7 +42,7 @@ for dir in *
     	then
     	echo "All optimisation done already!"
 	else
-	cat standard_states > INCAR
+	cat standard_settings > INCAR
     	cat INCAR.Ions.Tight >> INCAR
     	$ExecuteVasp
     	cp OUTCAR OUTCAR.Ions.Tight
@@ -54,7 +54,7 @@ for dir in *
     	then
     	echo "Polarisation done already!"
 	else
-	cat standard_states > INCAR
+	cat standard_settings > INCAR
     	cat INCAR.Polarisation >> INCAR
     	cp KPOINTS.Orig KPOINTS
     	$ExecuteVasp
@@ -65,7 +65,7 @@ for dir in *
     	then
     	echo "HSE-CHARGE done already!"
 	else
-	head -10 standard_states > INCAR
+	head -10 standard_settings > INCAR
     	cat INCAR.HSE0.Chg >> INCAR
     	cp KPOINTS.Orig KPOINTS
     	$ExecuteVasp
@@ -79,7 +79,7 @@ for dir in *
 	else
     	mv CHGCAR.HSE CHGCAR
     	mv WAVECAR.HSE WAVECAR
-	head -10 standard_states > INCAR
+	head -10 standard_settings > INCAR
     	cat INCAR.HSE0.Bands >> INCAR
     	awk '{if(NF ==4){print $0}}' IBZKPT > tmp
     	awk '{if(NF ==4){print $0}}' KPOINTS.band >> tmp
@@ -103,7 +103,7 @@ for dir in *
 	# Set a higher number of bands for the Optics calc (double the standard)
 	Bands=`grep NBANDS OUTCAR.Ions.Tight | head -1 | awk '{print $15}'`
 	NewBands=`echo "$Bands * 2" | bc`
-	head -10 standard_states > INCAR
+	head -10 standard_settings > INCAR
  	sed "s/NewBands/$NewBands/" INCAR.Optics >> INCAR	
 	# If possible it is good to have a denser k-point grid for Optics
 	cp KPOINTS.Optics KPOINTS
