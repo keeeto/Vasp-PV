@@ -1,16 +1,30 @@
-#!/bin/bash 
+#!/bin/bash --login
+
+#PBS -N C2m
+#PBS -l select=2
+#PBS -l walltime=12:00:00
+#PBS -A e05-gener-wal
+#PBS -q long
+
+#Note: select = No. Nodes (e.g. 12 = 12*24 = 288 cores)
+
+export OMP_NUM_THREADS=1
+ulimit -s unlimited
+module load vasp5/5.3.3
+
+export NPROC=`qstat -f $PBS_JOBID | awk '/Resource_List.mpiprocs/ {print $3}'`
+
+cd $PBS_O_WORKDIR
 
 for dir in *
       do
-    	cd $dir
+    	pushd $dir
+        cp ../INCAR* .
+	cp ../standard_settings .
 	cp *POSCAR* POSCAR
 	finished_ions=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`
 	finished_latt=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`
 	finished_totl=`grep equired OUTCAR.Ions.Tight | awk '{print $1}'`       # reached if done
-	finished_pol=`grep 'Ionic dipole' OUTCAR.Polarisation | awk '{print $1}'`  # Ionic if done
-	finished_hse_chg=`grep 'free  energy' OUTCAR.Charge | awk '{print $2}'` # energy if done
-	finished_hse_bands=`grep 'free  energy' OUTCAR.Bands | awk '{print $2}'` # energy if done
-	finished_hse_optics=`grep 'outermost' OUTCAR.Optics | awk '{print $2}'` # energy if done
 
 	if [ "$finished_ions" == 'reached' ]
     	then
@@ -18,8 +32,8 @@ for dir in *
 	else
 	cat standard_settings > INCAR
     	cat INCAR.Ions >> INCAR
-    	cp KPOINTS.Orig KPOINTS
-    	$ExecuteVasp
+	awk -f ../kpointer.awk POSCAR > KPOINTS
+        aprun -n $NPROC /home/e05/shared/red/vasp5 > vasp.out 
     	cp OUTCAR OUTCAR.Ions
     	cp CONTCAR CONTCAR.Ions
     	cp CONTCAR POSCAR
@@ -31,8 +45,8 @@ for dir in *
 	else
 	cat standard_settings > INCAR
     	cat INCAR.Lattice >> INCAR
-    	cp KPOINTS.Orig KPOINTS
-    	$ExecuteVasp
+	awk -f ../kpointer.awk POSCAR > KPOINTS
+        aprun -n $NPROC /home/e05/shared/red/vasp5 > vasp.out 
     	cp OUTCAR OUTCAR.Lattice
     	cp CONTCAR CONTCAR.Lattice
     	cp CONTCAR POSCAR
@@ -44,71 +58,11 @@ for dir in *
 	else
 	cat standard_settings > INCAR
     	cat INCAR.Ions.Tight >> INCAR
-    	$ExecuteVasp
+	awk -f ../kpointer.awk POSCAR > KPOINTS
+        aprun -n $NPROC /home/e05/shared/red/vasp5 > vasp.out 
     	cp OUTCAR OUTCAR.Ions.Tight
     	cp CONTCAR CONTCAR.Ions.Tight
     	cp CONTCAR POSCAR
 	fi
-	
-	if [ "$finished_pol" == 'Ionic' ]
-    	then
-    	echo "Polarisation done already!"
-	else
-	cat standard_settings > INCAR
-    	cat INCAR.Polarisation >> INCAR
-    	cp KPOINTS.Orig KPOINTS
-    	$ExecuteVasp
-    	cp OUTCAR OUTCAR.Polarisation
-	fi
-	
-	if [ "$finished_hse_chg" == 'energy' ]
-    	then
-    	echo "HSE-CHARGE done already!"
-	else
-	head -10 standard_settings > INCAR
-    	cat INCAR.HSE0.Chg >> INCAR
-    	cp KPOINTS.Orig KPOINTS
-    	$ExecuteVasp
-    	cp OUTCAR OUTCAR.Charge
-    	mv CHGCAR CHGCAR.HSE
-    	mv WAVECAR WAVECAR.HSE
-	fi
-	if [ "$finished_hse_bands" == 'energy' ]
-    	then
-    	echo "HSE-bands done already!"
-	else
-    	mv CHGCAR.HSE CHGCAR
-    	mv WAVECAR.HSE WAVECAR
-	head -10 standard_settings > INCAR
-    	cat INCAR.HSE0.Bands >> INCAR
-    	awk '{if(NF ==4){print $0}}' IBZKPT > tmp
-    	awk '{if(NF ==4){print $0}}' KPOINTS.band >> tmp
-    	echo 'Script generated mesh' > KPOINTS
-    	echo `wc -l tmp | awk '{print $1}'` >> KPOINTS
-    	echo 'Reciprocal lattice' >> KPOINTS
-    	cat tmp >> KPOINTS 
-    	$ExecuteVasp
-    	cp OUTCAR OUTCAR.Bands
-    	cp KPOINTS KPOINTS.Bands
-    	mv PROCAR PROCAR.HSE
-    	mv EIGENVAL EIGENVAL.HSE
-    	mv DOSCAR DOS.HSE
-    	mv LOCPOT LOCPOT.HSE
-	fi
-	
-	if [ "$finished_hse_optics" == 'outermost' ]
-    	then
-    	echo "HSE-optics done already!"
-	else
-	# Set a higher number of bands for the Optics calc (double the standard)
-	Bands=`grep NBANDS OUTCAR.Ions.Tight | head -1 | awk '{print $15}'`
-	NewBands=`echo "$Bands * 2" | bc`
-	head -10 standard_settings > INCAR
- 	sed "s/NewBands/$NewBands/" INCAR.Optics >> INCAR	
-	# If possible it is good to have a denser k-point grid for Optics
-	cp KPOINTS.Optics KPOINTS
-    	$ExecuteVasp
-	cp OUTCAR OUTCAR.Optics
-        fi	
-cd ../
-done
+      popd
+    done
