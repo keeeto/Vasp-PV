@@ -20,8 +20,8 @@ SYSTEM = Name
 
 !Ionic Relaxation
  EDIFFG =      -0.005 (Ionic convergence criteria, eV/AA)
- NSW    =      40    (Max ionic steps)
- IBRION =      1      (Ions: 0-MD, 1-Quasi-New, 2-CG)
+ NSW    =      3    (Max ionic steps)
+ IBRION =      2      (Ions: 0-MD, 1-Quasi-New, 2-CG)
  ISIF   =      7      (Stress/Relaxation: 2-Ions, 3-Shape/Ions/Vol, 7-Vol)
  POTIM  =      0.3
  ISYM   =      2      (Symmetry: Use all, 0: none)
