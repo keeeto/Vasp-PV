@@ -19,7 +19,7 @@ SYSTEM = Name
  AMIN   = 0.01
 
 !Ionic Relaxation
- EDIFFG =      0.001 (Ionic convergence criteria, eV/AA)
+ EDIFFG =      -0.01 (Ionic convergence criteria, eV/AA)
  NSW    =      300    (Max ionic steps)
  IBRION =      1      (Ions: 0-MD, 1-Quasi-New, 2-CG)
  ISIF   =      3      (Stress/Relaxation: 2-Ions, 3-Shape/Ions/Vol, 7-Vol)
